@@ -3,14 +3,14 @@ import time
 import os
 from botocore.exceptions import ClientError
 
-# DynamoDB 設置
+# DynamoDB setup
 dynamodb = boto3.resource('dynamodb',
                           endpoint_url=os.environ.get('DYNAMODB_ENDPOINT', 'http://localhost:8000'),
                           region_name=os.environ.get('AWS_DEFAULT_REGION', 'us-west-2'),
                           aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID', 'fakeMyKeyId'),
                           aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY', 'fakeSecretAccessKey'))
 
-# 創建表（如果不存在）
+# Create table (if not exists)
 def create_table():
     try:
         table = dynamodb.create_table(
@@ -44,7 +44,7 @@ def create_table():
         else:
             raise
 
-# 發送消息
+# Send message
 def send_message(sender_id, receiver_id, content, timestamp):
     table = dynamodb.Table('UserMessages')
     
@@ -79,7 +79,7 @@ def send_message(sender_id, receiver_id, content, timestamp):
                 print(f"Error sending message: {e}")
                 raise
 
-# 獲取對話
+# Get conversation
 def get_conversation(user_id, other_user_id, start_time, end_time):
     table = dynamodb.Table('UserMessages')
     
@@ -98,11 +98,11 @@ def get_conversation(user_id, other_user_id, start_time, end_time):
 if __name__ == "__main__":
     create_table()
     
-    # 示例：發送消息
+    # Example: Send messages
     send_message(123, 456, "Hello, how are you?", 100)
     send_message(456, 123, "I'm fine, thank you!", 101)
     
-    # 示例：獲取對話
+    # Example: Get conversation
     start_time = 0
     end_time = 105
     conversation = get_conversation(123, 456, start_time, end_time)
